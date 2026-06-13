@@ -16,7 +16,13 @@ const ru = {
     modal: {
       title: 'Выберите устройство USB',
       selectVideo: 'Выбрать источник видео',
-      selectSerial: 'Выбрать последовательный порт'
+      selectSerial: 'Выбрать последовательный порт',
+      modeLocal: 'Local USB',
+      modeBridge: 'Bridge (RPi)',
+      bridgeUrl: 'Bridge address (host:port)',
+      connectBridge: 'Connect to Bridge',
+      bridgeConnecting: 'Connecting...',
+      bridgeFailed: 'Failed to connect to bridge. Check the address and try again.'
     },
     menu: {
       serial: 'Последовательный порт',

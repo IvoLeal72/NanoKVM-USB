@@ -15,7 +15,13 @@ const ko = {
     modal: {
       title: 'USB 장치 선택',
       selectVideo: '비디오 입력 장치를 선택해 주세요.',
-      selectSerial: '시리얼 장치를 선택해 주세요.'
+      selectSerial: '시리얼 장치를 선택해 주세요.',
+      modeLocal: 'Local USB',
+      modeBridge: 'Bridge (RPi)',
+      bridgeUrl: 'Bridge address (host:port)',
+      connectBridge: 'Connect to Bridge',
+      bridgeConnecting: 'Connecting...',
+      bridgeFailed: 'Failed to connect to bridge. Check the address and try again.'
     },
     menu: {
       serial: '시리얼',

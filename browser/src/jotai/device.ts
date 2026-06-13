@@ -18,3 +18,7 @@ export const videoDeviceIdAtom = atom('');
 export const videoStateAtom = atom<VideoState>('disconnected');
 
 export const serialStateAtom = atom<SerialState>('disconnected');
+
+export type ConnectionMode = 'local' | 'bridge';
+export const connectionModeAtom = atom<ConnectionMode>('local');
+export const bridgeUrlAtom = atom<string>('');

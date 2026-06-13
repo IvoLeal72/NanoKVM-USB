@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { MouseRelativeEvent } from '@/components/mouse/types.ts';
 import { scrollDirectionAtom, scrollIntervalAtom } from '@/jotai/mouse.ts';
 import { device } from '@/libs/device';
+import { getScreenElement } from '@/libs/device/utils.ts';
 import { MouseReportRelative } from '@/libs/mouse';
 import { mouseJiggler } from '@/libs/mouse-jiggler';
 
@@ -23,7 +24,7 @@ export const Relative = () => {
   showMessage();
 
   useEffect(() => {
-    const screen = document.getElementById('video');
+    const screen = getScreenElement();
     if (!screen) return;
 
     screen.addEventListener('click', handleClick);

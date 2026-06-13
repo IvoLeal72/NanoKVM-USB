@@ -11,6 +11,7 @@ import { Menu } from '@/components/menu';
 import { Mouse } from '@/components/mouse';
 import { VirtualKeyboard } from '@/components/virtual-keyboard';
 import {
+  connectionModeAtom,
   resolutionAtom,
   serialStateAtom,
   videoRotationAtom,
@@ -21,6 +22,7 @@ import { isKeyboardEnableAtom } from '@/jotai/keyboard.ts';
 import { mouseStyleAtom } from '@/jotai/mouse.ts';
 import { device } from '@/libs/device';
 import { camera } from '@/libs/media/camera';
+import { mjpegCamera } from '@/libs/media/mjpeg-camera';
 import { checkPermission, requestCameraPermission } from '@/libs/media/permission.ts';
 import * as storage from '@/libs/storage';
 import type { Resolution } from '@/types.ts';
@@ -33,6 +35,7 @@ const App = () => {
   const videoScale = useAtomValue(videoScaleAtom);
   const videoState = useAtomValue(videoStateAtom);
   const serialState = useAtomValue(serialStateAtom);
+  const connectionMode = useAtomValue(connectionModeAtom);
   const isKeyboardEnable = useAtomValue(isKeyboardEnableAtom);
   const setResolution = useSetAtom(resolutionAtom);
   const [videoRotation, setVideoRotation] = useAtom(videoRotationAtom);
@@ -42,11 +45,24 @@ const App = () => {
   const [shouldSwapDimensions, setShouldSwapDimensions] = useState(false);
 
   useEffect(() => {
-    initResolution();
     initRotation();
+
+    const savedMode = storage.getConnectionMode() ?? 'local';
+    const resolution = storage.getVideoResolution();
+    if (resolution) {
+      setResolution(resolution);
+    }
+
+    if (savedMode === 'bridge') {
+      setIsCameraGranted(true);
+      setIsLoading(false);
+    } else {
+      requestPermission(resolution);
+    }
 
     return () => {
       camera.close();
+      mjpegCamera.close();
       device.serialPort.close();
     };
   }, []);
@@ -78,15 +94,6 @@ const App = () => {
       transform: `scale(${videoScale}) rotate(${videoRotation}deg)`
     };
   }, [videoScale, videoRotation, shouldSwapDimensions]);
-
-  function initResolution() {
-    const resolution = storage.getVideoResolution();
-    if (resolution) {
-      setResolution(resolution);
-    }
-
-    requestPermission(resolution);
-  }
 
   function initRotation() {
     const rotation = storage.getVideoRotation();
@@ -126,6 +133,12 @@ const App = () => {
     );
   }
 
+  const sharedVideoClass = clsx(
+    'block select-none',
+    shouldSwapDimensions ? 'min-h-[640px] min-w-[360px]' : 'min-h-[360px] min-w-[640px]',
+    mouseStyle
+  );
+
   return (
     <>
       <DeviceModal />
@@ -149,14 +162,23 @@ const App = () => {
 
       <video
         id="video"
-        className={clsx(
-          'block select-none',
-          shouldSwapDimensions ? 'min-h-[640px] min-w-[360px]' : 'min-h-[360px] min-w-[640px]',
-          mouseStyle
-        )}
-        style={videoStyle as CSSProperties}
+        className={sharedVideoClass}
+        style={{
+          ...(videoStyle as CSSProperties),
+          display: connectionMode === 'bridge' ? 'none' : undefined
+        }}
         autoPlay
         playsInline
+      />
+
+      <img
+        id="bridge-video"
+        className={sharedVideoClass}
+        style={{
+          ...(videoStyle as CSSProperties),
+          display: connectionMode === 'bridge' ? undefined : 'none'
+        }}
+        alt=""
       />
 
       <VirtualKeyboard isBigScreen={isBigScreen} />

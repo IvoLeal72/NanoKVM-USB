@@ -13,7 +13,13 @@ const zh_tw = {
     modal: {
       title: '選擇 USB 裝置',
       selectVideo: '請選擇視訊輸入裝置',
-      selectSerial: '選擇序列埠裝置'
+      selectSerial: '選擇序列埠裝置',
+      modeLocal: 'Local USB',
+      modeBridge: 'Bridge (RPi)',
+      bridgeUrl: 'Bridge address (host:port)',
+      connectBridge: 'Connect to Bridge',
+      bridgeConnecting: 'Connecting...',
+      bridgeFailed: 'Failed to connect to bridge. Check the address and try again.'
     },
     menu: {
       serial: '序列埠',
