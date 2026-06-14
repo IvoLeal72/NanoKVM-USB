@@ -8,7 +8,7 @@ echo "Installing NanoKVM-USB bridge..."
 
 # Install system dependencies
 sudo apt-get update -qq
-sudo apt-get install -y ffmpeg python3-pip
+sudo apt-get install -y ffmpeg python3-pip python3-aiohttp
 
 # Install Python dependencies
 pip3 install -r "$(dirname "$0")/requirements.txt"
