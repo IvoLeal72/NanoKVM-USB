@@ -1,0 +1,18 @@
+[Unit]
+Description=NanoKVM-USB Bridge Server
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/opt/nanokvm-bridge
+ExecStart=/usr/bin/python3 /opt/nanokvm-bridge/bridge.py
+Restart=always
+RestartSec=5
+
+Environment=SERIAL_PORT=/dev/ttyUSB0
+Environment=VIDEO_DEVICE=/dev/video0
+Environment=PORT=8080
+
+[Install]
+WantedBy=multi-user.target

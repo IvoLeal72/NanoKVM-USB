@@ -13,7 +13,13 @@ const zh = {
     modal: {
       title: '选择 USB 设备',
       selectVideo: '请选择视频输入设备',
-      selectSerial: '选择串口设备'
+      selectSerial: '选择串口设备',
+      modeLocal: 'Local USB',
+      modeBridge: 'Bridge (RPi)',
+      bridgeUrl: 'Bridge address (host:port)',
+      connectBridge: 'Connect to Bridge',
+      bridgeConnecting: 'Connecting...',
+      bridgeFailed: 'Failed to connect to bridge. Check the address and try again.'
     },
     menu: {
       serial: '串口',

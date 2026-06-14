@@ -6,6 +6,7 @@ import { createInitialTouchState, createTouchHandlers } from '@/components/mouse
 import { MouseAbsoluteEvent } from '@/components/mouse/types.ts';
 import { scrollDirectionAtom, scrollIntervalAtom } from '@/jotai/mouse.ts';
 import { device } from '@/libs/device';
+import { getScreenElement } from '@/libs/device/utils.ts';
 import { MouseAbsoluteRelative } from '@/libs/mouse';
 import { mouseJiggler } from '@/libs/mouse-jiggler';
 
@@ -21,7 +22,7 @@ export const Absolute = () => {
   const touchStateRef = useRef(createInitialTouchState());
 
   useEffect(() => {
-    const screen = document.getElementById('video') as HTMLVideoElement;
+    const screen = getScreenElement();
     if (!screen) return;
 
     // Add mouse event listeners
@@ -89,18 +90,19 @@ export const Absolute = () => {
 
     // Calculate mouse coordinate
     function getCoordinate(event: { clientX: number; clientY: number }): { x: number; y: number } {
-      const rect = screen.getBoundingClientRect();
+      const rect = screen!.getBoundingClientRect();
 
       const clientX = event.clientX;
       const clientY = event.clientY;
 
-      if (!screen.videoWidth || !screen.videoHeight) {
+      const videoEl = screen as HTMLVideoElement;
+      if (!videoEl.videoWidth || !videoEl.videoHeight) {
         const x = (clientX - rect.left) / rect.width;
         const y = (clientY - rect.top) / rect.height;
         return { x, y };
       }
 
-      const videoRatio = screen.videoWidth / screen.videoHeight;
+      const videoRatio = videoEl.videoWidth / videoEl.videoHeight;
       const elementRatio = rect.width / rect.height;
 
       let renderedWidth = rect.width;

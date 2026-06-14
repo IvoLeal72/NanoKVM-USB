@@ -15,7 +15,13 @@ const pl = {
     modal: {
       title: 'Wybierz urządzenie USB',
       selectVideo: 'Wybierz urządzenie wejścia wideo',
-      selectSerial: 'Wybierz urządzenie portu szeregowego'
+      selectSerial: 'Wybierz urządzenie portu szeregowego',
+      modeLocal: 'Local USB',
+      modeBridge: 'Bridge (RPi)',
+      bridgeUrl: 'Bridge address (host:port)',
+      connectBridge: 'Connect to Bridge',
+      bridgeConnecting: 'Connecting...',
+      bridgeFailed: 'Failed to connect to bridge. Check the address and try again.'
     },
     menu: {
       serial: 'Port szeregowy',

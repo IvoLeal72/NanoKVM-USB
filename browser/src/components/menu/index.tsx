@@ -62,6 +62,7 @@ export const Menu = () => {
   }
 
   return (
+    // @ts-expect-error react-draggable type definitions changed in 4.6.x
     <Draggable
       nodeRef={nodeRef}
       bounds={menuBounds}

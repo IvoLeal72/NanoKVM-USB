@@ -15,7 +15,13 @@ const nl = {
     modal: {
       title: 'Selecteer USB-apparaat',
       selectVideo: 'Selecteer een video-invoerapparaat',
-      selectSerial: 'Selecteer serieel apparaat'
+      selectSerial: 'Selecteer serieel apparaat',
+      modeLocal: 'Local USB',
+      modeBridge: 'Bridge (RPi)',
+      bridgeUrl: 'Bridge address (host:port)',
+      connectBridge: 'Connect to Bridge',
+      bridgeConnecting: 'Connecting...',
+      bridgeFailed: 'Failed to connect to bridge. Check the address and try again.'
     },
     menu: {
       serial: 'Serieel',

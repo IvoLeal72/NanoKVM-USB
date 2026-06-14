@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { serialStateAtom } from '@/jotai/device.ts';
 import { device } from '@/libs/device';
+import { SerialPort as LocalSerialPort } from '@/libs/device/serial-port.ts';
 
 type SerialPortProps = {
   onDisconnect: () => void;
@@ -30,7 +31,7 @@ export const SerialPort = ({ setErrMsg, onDisconnect }: SerialPortProps) => {
 
     try {
       const port = await navigator.serial.requestPort();
-      await device.serialPort.init({ port, onDisconnect });
+      await (device.serialPort as LocalSerialPort).init({ port, onDisconnect });
 
       setSerialState('connected');
     } catch (err) {

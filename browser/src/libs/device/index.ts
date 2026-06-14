@@ -1,12 +1,21 @@
 import { CmdEvent, CmdPacket, InfoPacket } from './proto.ts';
 import { SerialPort } from './serial-port.ts';
+import { WebSocketSerialPort } from './websocket-serial-port.ts';
 
 export class Device {
   addr: number;
-  serialPort: SerialPort;
+  serialPort: SerialPort | WebSocketSerialPort;
 
   constructor() {
     this.addr = 0x00;
+    this.serialPort = new SerialPort();
+  }
+
+  useBridgePort(port: WebSocketSerialPort): void {
+    this.serialPort = port;
+  }
+
+  useLocalPort(): void {
     this.serialPort = new SerialPort();
   }
 

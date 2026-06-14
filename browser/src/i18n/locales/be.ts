@@ -15,7 +15,13 @@ const be = {
     modal: {
       title: 'Kies USB-apparaat',
       selectVideo: 'Kies een video-invoerapparaat',
-      selectSerial: 'Kies serieel apparaat'
+      selectSerial: 'Kies serieel apparaat',
+      modeLocal: 'Local USB',
+      modeBridge: 'Bridge (RPi)',
+      bridgeUrl: 'Bridge address (host:port)',
+      connectBridge: 'Connect to Bridge',
+      bridgeConnecting: 'Connecting...',
+      bridgeFailed: 'Failed to connect to bridge. Check the address and try again.'
     },
     menu: {
       serial: 'Serieel',

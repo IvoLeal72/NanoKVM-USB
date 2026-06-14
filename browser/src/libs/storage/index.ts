@@ -155,3 +155,23 @@ export function getMouseJigglerMode(): 'enable' | 'disable' {
 export function setMouseJigglerMode(jiggler: 'enable' | 'disable'): void {
   localStorage.setItem(MOUSE_JIGGLER_MODE_KEY, jiggler);
 }
+
+const BRIDGE_URL_KEY = 'nanokvm-usb-bridge-url';
+const CONNECTION_MODE_KEY = 'nanokvm-usb-connection-mode';
+
+export function getBridgeUrl(): string | null {
+  return localStorage.getItem(BRIDGE_URL_KEY);
+}
+
+export function setBridgeUrl(url: string): void {
+  localStorage.setItem(BRIDGE_URL_KEY, url);
+}
+
+export function getConnectionMode(): 'local' | 'bridge' | null {
+  const mode = localStorage.getItem(CONNECTION_MODE_KEY);
+  return mode === 'local' || mode === 'bridge' ? mode : null;
+}
+
+export function setConnectionMode(mode: 'local' | 'bridge'): void {
+  localStorage.setItem(CONNECTION_MODE_KEY, mode);
+}

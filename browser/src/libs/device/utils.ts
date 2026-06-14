@@ -5,6 +5,13 @@ export function raceWithTimeout<T>(promise: Promise<T>, ms: number): Promise<T |
   ]);
 }
 
+export function getScreenElement(): HTMLElement | null {
+  const mode = localStorage.getItem('nanokvm-usb-connection-mode');
+  return mode === 'bridge'
+    ? document.getElementById('bridge-video')
+    : document.getElementById('video');
+}
+
 export function isDisconnectError(err: unknown): boolean {
   if (!(err instanceof Error)) return false;
 
