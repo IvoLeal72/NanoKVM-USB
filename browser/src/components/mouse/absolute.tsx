@@ -90,7 +90,7 @@ export const Absolute = () => {
 
     // Calculate mouse coordinate
     function getCoordinate(event: { clientX: number; clientY: number }): { x: number; y: number } {
-      const rect = screen.getBoundingClientRect();
+      const rect = screen!.getBoundingClientRect();
 
       const clientX = event.clientX;
       const clientY = event.clientY;
