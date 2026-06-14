@@ -117,35 +117,61 @@ async def video_handler(request):
     EOI = b"\xff\xd9"
     buf = b""
 
+    # Single-slot queue: always drop the old frame when a newer one is ready,
+    # so a slow client always receives the latest frame rather than lagging.
+    frame_queue: asyncio.Queue[bytes] = asyncio.Queue(maxsize=1)
+
+    async def read_frames():
+        nonlocal buf
+        try:
+            while True:
+                chunk = await proc.stdout.read(65536)
+                if not chunk:
+                    break
+                buf += chunk
+
+                while True:
+                    start = buf.find(SOI)
+                    if start == -1:
+                        buf = b""
+                        break
+                    end = buf.find(EOI, start + 2)
+                    if end == -1:
+                        buf = buf[start:]
+                        break
+                    frame = buf[start:end + 2]
+                    buf = buf[end + 2:]
+
+                    header = (
+                        f"--{BOUNDARY}\r\n"
+                        "Content-Type: image/jpeg\r\n"
+                        f"Content-Length: {len(frame)}\r\n\r\n"
+                    ).encode()
+                    packet = header + frame + b"\r\n"
+
+                    # Drop the previous unsent frame if client is behind
+                    if frame_queue.full():
+                        try:
+                            frame_queue.get_nowait()
+                        except asyncio.QueueEmpty:
+                            pass
+                    await frame_queue.put(packet)
+        finally:
+            await frame_queue.put(b"")  # sentinel to stop writer
+
+    reader = asyncio.create_task(read_frames())
+
     try:
         while True:
-            chunk = await proc.stdout.read(65536)
-            if not chunk:
+            packet = await frame_queue.get()
+            if not packet:
                 break
-            buf += chunk
-
-            while True:
-                start = buf.find(SOI)
-                if start == -1:
-                    buf = b""
-                    break
-                end = buf.find(EOI, start + 2)
-                if end == -1:
-                    buf = buf[start:]
-                    break
-                frame = buf[start:end + 2]
-                buf = buf[end + 2:]
-
-                header = (
-                    f"--{BOUNDARY}\r\n"
-                    "Content-Type: image/jpeg\r\n"
-                    f"Content-Length: {len(frame)}\r\n\r\n"
-                ).encode()
-                try:
-                    await response.write(header + frame + b"\r\n")
-                except (ConnectionResetError, asyncio.CancelledError):
-                    return response
+            try:
+                await response.write(packet)
+            except (ConnectionResetError, asyncio.CancelledError):
+                break
     finally:
+        reader.cancel()
         proc.kill()
         await proc.wait()
         log.info("Video stream ended for %s", request.remote)
