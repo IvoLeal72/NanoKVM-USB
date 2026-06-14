@@ -21,33 +21,32 @@ export class WebSocketSerialPort {
 
     this.onDisconnect = options.onDisconnect;
 
-    await raceWithTimeout(
-      new Promise<void>((resolve, reject) => {
-        const ws = new WebSocket(options.url);
-        ws.binaryType = 'arraybuffer';
+    await new Promise<void>((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(new Error('WebSocket connection timed out'));
+      }, this.CONNECT_TIMEOUT);
 
-        ws.onopen = () => {
-          this.ws = ws;
-          resolve();
-        };
+      const ws = new WebSocket(options.url);
+      ws.binaryType = 'arraybuffer';
 
-        ws.onerror = () => {
-          reject(new Error('WebSocket connection failed'));
-        };
+      ws.onopen = () => {
+        clearTimeout(timeout);
+        this.ws = ws;
+        resolve();
+      };
 
-        ws.onmessage = (event: MessageEvent) => {
-          this.onMessage(event.data as ArrayBuffer);
-        };
+      ws.onerror = () => {
+        clearTimeout(timeout);
+        reject(new Error('WebSocket connection failed'));
+      };
 
-        ws.onclose = () => {
-          this.onClose();
-        };
-      }),
-      this.CONNECT_TIMEOUT
-    ).then((result) => {
-      if (result === undefined) {
-        throw new Error('WebSocket connection timed out');
-      }
+      ws.onmessage = (event: MessageEvent) => {
+        this.onMessage(event.data as ArrayBuffer);
+      };
+
+      ws.onclose = () => {
+        this.onClose();
+      };
     });
   }
 
